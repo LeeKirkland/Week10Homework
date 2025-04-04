@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,22 +9,38 @@ public class PlayerRPG : MonoBehaviour
     public float health = 100f;
     public float attackDamage = 5f;
     public float attackInterval = 1f;
+    public float damageReductionFactor = 1f;
+
+    public int maxAmmo = 10;  
+    public int currentAmmo;    
+    public float projectileDamage = 20f;  
+    public float projectileSpeed = 10f;  
 
     private float timer;
     private bool isAttackReady = true;
 
     public Image attackReadyImage;
 
+    public TextMeshProUGUI healthText;
+
+    public GameObject projectilePrefab; 
+    public Transform projectileSpawnPoint;  
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentAmmo = maxAmmo; //starting ammo amount
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isAttackReady == false)
+        if (healthText != null)
+        {
+            healthText.text = "Health: " + health.ToString("F0"); // Display health
+        }
+
+        if (isAttackReady == false)
         {
             timer += Time.deltaTime;
 
@@ -34,25 +51,34 @@ public class PlayerRPG : MonoBehaviour
                 timer = 0f;
             }
         }
-        
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && isAttackReady)
         {
-            if(isAttackReady == true)
+            if (currentAmmo > 0)  // Checkint if there is ammo
             {
-                RaycastHit hit;
-
-                if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3f))
-                {
-                    BaseEnemy enemy = hit.collider.GetComponent<BaseEnemy>();
-
-                    if (enemy != null)
-                    {
-                        Attack(enemy);
-                    }
-                }
+                ShootProjectile();
+                currentAmmo--;
+                isAttackReady = false;
+                attackReadyImage.gameObject.SetActive(isAttackReady);
             }
         }
+    }
+    void ShootProjectile()
+    {
+        GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);        //putting projectile at spawn point
+
+        Projectile projScript = projectile.GetComponent<Projectile>();
+        projScript.damage = projectileDamage;
+        projScript.speed = projectileSpeed;
+
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();    //making it move
+        rb.velocity = transform.forward * projectileSpeed;
+    }
+
+    public void ReloadAmmo()
+    {
+        currentAmmo = maxAmmo; 
+        Debug.Log("Ammo reloaded!");
     }
 
     public void Attack(BaseEnemy enemy)
