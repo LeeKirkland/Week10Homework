@@ -1120,7 +1120,7 @@ MonoBehaviour:
   attackInterval: 1
   attackRange: 10
   audioSource: {fileID: 1129636925}
-  hitSound: {fileID: 8300000, guid: 52e497d7ed40dd24bb652fedc992a44c, type: 3}
+  hitSound: {fileID: 0}
   damageSound: {fileID: 8300000, guid: 5dc4bd54f6bd7014dba246d017529c3f, type: 3}
   attackSound: {fileID: 8300000, guid: 52e497d7ed40dd24bb652fedc992a44c, type: 3}
 --- !u!4 &752300276 stripped
@@ -1338,7 +1338,7 @@ MonoBehaviour:
   attackInterval: 2
   attackRange: 5
   audioSource: {fileID: 1873163590}
-  hitSound: {fileID: 8300000, guid: 7ffef802c488d7c4ba372a12b4f58f9b, type: 3}
+  hitSound: {fileID: 0}
   damageSound: {fileID: 8300000, guid: 5a1a2b8d08253bf4aa5bae2e56756e75, type: 3}
   attackSound: {fileID: 8300000, guid: 7ffef802c488d7c4ba372a12b4f58f9b, type: 3}
 --- !u!4 &1008924724 stripped
@@ -3629,7 +3629,7 @@ MonoBehaviour:
   attackInterval: 1
   attackRange: 5
   audioSource: {fileID: 1227255901}
-  hitSound: {fileID: 8300000, guid: a07dc8090a6e7ff43bfca1c6ec3442a0, type: 3}
+  hitSound: {fileID: 0}
   damageSound: {fileID: 8300000, guid: 87ba35515f0b8d54187d8d21f78751b6, type: 3}
   attackSound: {fileID: 8300000, guid: a07dc8090a6e7ff43bfca1c6ec3442a0, type: 3}
 --- !u!4 &2018230100 stripped
