@@ -1,48 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
-
 {
-    public float damage = 10f;  
-    public float speed = 10f;  
-    public float lifetime = 5f;
+    public float damage;  
+    public float speed;   
 
-    private Rigidbody projectile; 
+    private Rigidbody rigidbody;
 
-    // Start is called before the first frame update
     void Start()
     {
-        projectile = GetComponent<Rigidbody>();  
-        projectile.velocity = transform.forward * speed;
-        Destroy(gameObject, lifetime);
-    }
+       
+        rigidbody = GetComponent<Rigidbody>();
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
+        // If the rigidbody is found, set its velocity
+        if (rigidbody != null)
         {
-            BaseEnemy enemy = collision.gameObject.GetComponent<BaseEnemy>();       //referencing the base enemy script becasue it applies to all enemies
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);  
-            }
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.CompareTag("Player"))
-        {
-            return;     //so the projectile doesn't hit the player 
-        }
-        else
-        {
-            Destroy(gameObject);
+            rigidbody.velocity = transform.forward * speed;  
         }
     }
 
-// Update is called once per frame
-void Update()
+    void OnCollisionEnter(Collision collision)
     {
-        
+        // Check if the collided object is an enemy
+        BaseEnemy enemy = collision.gameObject.GetComponent<BaseEnemy>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage); 
+            enemy.TakeDamage(damage); 
+            Destroy(gameObject);  
+        }
     }
 }

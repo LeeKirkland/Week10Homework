@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SlimeEnemy : BaseEnemy
+public class DisplacerEnemy : BaseEnemy
 {
     public AudioSource audioSource;
     public AudioClip hitSound;
     public AudioClip damageSound;
-    public AudioClip attackSound; 
+    public AudioClip attackSound;  
 
     protected override void Start()
     {
@@ -17,7 +17,7 @@ public class SlimeEnemy : BaseEnemy
             audioSource = GetComponent<AudioSource>();
         }
 
-        Debug.Log("HeeHo I'm a slime!");
+        Debug.Log("Grrr I'm a beast!");
     }
 
     // Update is called once per frame
