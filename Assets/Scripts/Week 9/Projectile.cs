@@ -5,7 +5,7 @@ public class Projectile : MonoBehaviour
     public float damage;  
     public float speed;   
 
-    private Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
 
     void Start()
     {

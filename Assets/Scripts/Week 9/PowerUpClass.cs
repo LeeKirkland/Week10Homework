@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerUpClass : MonoBehaviour
 {
-    public float value; 
+    public float value;
     public virtual void ApplyPowerUp(GameObject player)
     {
         Debug.Log("Power-up applied");
@@ -17,16 +17,15 @@ public class PowerUpClass : MonoBehaviour
             Destroy(gameObject);
         }
     }
-// Start is called before the first frame update
-void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
-
