@@ -19,16 +19,15 @@ public class DragonEnemy : BaseEnemy
         base.Start();
 
         agent = GetComponent<NavMeshAgent>();
-        agent.angularSpeed = 0; // We'll rotate manually
-
-        // Ensure the dragon is standing upright (rotated like a billboard)
-        transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-        // Offset the dragon so it's not halfway in the ground
-        transform.position = new Vector3(transform.position.x, 0.5f, transform.position.z);
 
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
+
+        if (agent != null)
+        {
+            agent.isStopped = false;
+            agent.updateRotation = false;
+        }
 
         if (patrolPoints != null && patrolPoints.Length > 0)
         {
@@ -42,7 +41,6 @@ public class DragonEnemy : BaseEnemy
     {
         base.Update();
         HandlePatrolling();
-        FaceMovementDirection(); // Rotate to face direction
     }
 
     private void HandlePatrolling()
@@ -50,7 +48,7 @@ public class DragonEnemy : BaseEnemy
         if (agent == null || patrolPoints == null || patrolPoints.Length == 0)
             return;
 
-        if (agent.remainingDistance < 0.5f)
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             currentPatrolIndex++;
             if (currentPatrolIndex >= patrolPoints.Length)
@@ -59,19 +57,6 @@ public class DragonEnemy : BaseEnemy
             }
 
             agent.SetDestination(patrolPoints[currentPatrolIndex].position);
-        }
-    }
-
-    private void FaceMovementDirection()
-    {
-        if (agent.velocity.sqrMagnitude > 0.1f)
-        {
-            Vector3 direction = agent.velocity.normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(direction.x, 0f, direction.z));
-
-            // Apply Y-axis rotation only to keep upright
-            float yRotation = targetRotation.eulerAngles.y;
-            transform.rotation = Quaternion.Euler(90f, yRotation, 0f); // Keep X at 90 to stand up
         }
     }
 
@@ -85,6 +70,7 @@ public class DragonEnemy : BaseEnemy
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
+        Debug.Log($"Dragon took {damage} damage!");
         PlayDamageSound();
     }
 
@@ -106,6 +92,7 @@ public class DragonEnemy : BaseEnemy
         if (audioSource != null && hitSound != null)
         {
             audioSource.PlayOneShot(hitSound);
+            Debug.Log("Dragon hit sound played");
         }
     }
 
@@ -114,6 +101,7 @@ public class DragonEnemy : BaseEnemy
         if (audioSource != null && damageSound != null)
         {
             audioSource.PlayOneShot(damageSound);
+            Debug.Log("Dragon damage sound played");
         }
     }
 
@@ -122,6 +110,7 @@ public class DragonEnemy : BaseEnemy
         if (audioSource != null && attackSound != null)
         {
             audioSource.PlayOneShot(attackSound);
+            Debug.Log("Dragon attack sound played");
         }
     }
 }

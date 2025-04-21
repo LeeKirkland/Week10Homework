@@ -11,26 +11,22 @@ public class BaseEnemy : MonoBehaviour
     private float timer = 0f;
 
     [SerializeField] protected float attackInterval = 1f;
-    [SerializeField] protected float attackRange = 5f; //modify to make attack range for each enemy
+    [SerializeField] protected float attackRange = 5f;
 
     private PlayerRPG player;
 
-    // Start is called before the first frame update
     protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerRPG>();
     }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
-      
-        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);       //checks distance between player and enemy
+        float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
         if (distanceToPlayer <= attackRange)
         {
-       
-            timer += Time.deltaTime;        //increases timer if player in range
+            timer += Time.deltaTime;
 
             if (timer >= attackInterval)
             {
@@ -40,8 +36,7 @@ public class BaseEnemy : MonoBehaviour
         }
         else
         {
-          
-            timer = 0f;     //if player is out of range
+            timer = 0f;
         }
     }
 
@@ -52,16 +47,23 @@ public class BaseEnemy : MonoBehaviour
 
     public virtual void Move()
     {
-        // Logic for enemy movement (if necessary)
+        // Optional movement logic
     }
 
     public virtual void TakeDamage(float damage)
     {
         health -= damage;
+        Debug.Log($"{gameObject.name} took {damage} damage. Remaining health: {health}");
 
         if (health <= 0f)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
+    }
+
+    public virtual void ReceiveProjectileHit(float damage)
+    {
+        Debug.Log($"{gameObject.name} received projectile hit for {damage} damage");
+        TakeDamage(damage);
     }
 }

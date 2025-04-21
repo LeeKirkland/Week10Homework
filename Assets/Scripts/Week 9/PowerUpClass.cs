@@ -5,27 +5,42 @@ using UnityEngine;
 public class PowerUpClass : MonoBehaviour
 {
     public float value;
+    public float respawnTime = 5f; // Time in seconds before the power-up reappears
+
+    private Collider powerUpCollider;
+    private Renderer powerUpRenderer;
+
+    private void Awake()
+    {
+        powerUpCollider = GetComponent<Collider>();
+        powerUpRenderer = GetComponent<Renderer>();
+    }
+
     public virtual void ApplyPowerUp(GameObject player)
     {
         Debug.Log("Power-up applied");
     }
-    public void OnTriggerEnter(Collider other)     //checking if player triggers it then tells it what to do 
+
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             ApplyPowerUp(other.gameObject);
-            Destroy(gameObject);
+            StartCoroutine(RespawnPowerUp());
         }
     }
-    // Start is called before the first frame update
-    void Start()
+
+    private IEnumerator RespawnPowerUp()
     {
+        // Disable visual and collision
+        powerUpRenderer.enabled = false;
+        powerUpCollider.enabled = false;
 
-    }
+        // Wait for respawn time
+        yield return new WaitForSeconds(respawnTime);
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        // Re-enable visual and collision
+        powerUpRenderer.enabled = true;
+        powerUpCollider.enabled = true;
     }
 }

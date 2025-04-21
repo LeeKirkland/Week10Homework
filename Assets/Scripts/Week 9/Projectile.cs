@@ -2,32 +2,29 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float damage;  
-    public float speed;   
+    public float damage;
+    public float speed;
 
-    private new Rigidbody rigidbody;
+    private Rigidbody rb;
 
     void Start()
     {
-       
-        rigidbody = GetComponent<Rigidbody>();
-
-        // If the rigidbody is found, set its velocity
-        if (rigidbody != null)
+        rb = GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            rigidbody.velocity = transform.forward * speed;  
+            rb.velocity = transform.forward * speed;
         }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        // Check if the collided object is an enemy
         BaseEnemy enemy = collision.gameObject.GetComponent<BaseEnemy>();
         if (enemy != null)
         {
-            enemy.TakeDamage(damage); 
-            enemy.TakeDamage(damage); 
-            Destroy(gameObject);  
+            Debug.Log($"Hit {enemy.name} for {damage} damage");
+            enemy.ReceiveProjectileHit(damage);
         }
+
+        Destroy(gameObject);
     }
 }
