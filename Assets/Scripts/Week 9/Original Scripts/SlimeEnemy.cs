@@ -8,7 +8,7 @@ public class SlimeEnemy : BaseEnemy
     public AudioClip hitSound;
     public AudioClip damageSound;
     public AudioClip attackSound;
-    public AudioClip immuneToRangedSound;
+
 
     protected override void Start()
     {
@@ -38,13 +38,6 @@ public class SlimeEnemy : BaseEnemy
         base.TakeDamage(damage);
         PlayDamageSound(); // Plays sound only for melee damage
     }
-
-    public override void ReceiveProjectileHit(float damage)
-    {
-        PlayImmuneSound(); // Don't take projectile damage
-        Debug.Log("SlimeEnemy is immune to ranged attacks!");
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -69,11 +62,5 @@ public class SlimeEnemy : BaseEnemy
         }
     }
 
-    private void PlayImmuneSound()
-    {
-        if (audioSource != null && immuneToRangedSound != null)
-        {
-            audioSource.PlayOneShot(immuneToRangedSound);
-        }
+
     }
-}

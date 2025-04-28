@@ -53,11 +53,12 @@ public class BaseEnemy : MonoBehaviour
     public virtual void TakeDamage(float damage)
     {
         health -= damage;
+   
         Debug.Log($"{gameObject.name} took {damage} damage. Remaining health: {health}");
 
         if (health <= 0f)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
 
