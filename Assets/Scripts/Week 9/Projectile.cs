@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     public float speed = 20f;
     public float lifeTime = 5f;
     public float damage = 20f;
+    public Rigidbody rb;
 
     public AudioClip slimeFailSound;
     private AudioSource audioSource;
@@ -14,46 +15,80 @@ public class Projectile : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+
+        rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.velocity = transform.forward * speed;
+        }
+
         Destroy(gameObject, lifeTime);
     }
 
     void Update()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        Debug.DrawRay(transform.position, transform.forward * 2, Color.red);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Projectile hit: " + other.gameObject.name);
+        Debug.Log("OnCollisionEnter was triggered."); // Confirm collision
+        Debug.Log($"Projectile collided with: {collision.gameObject.name}");
 
-        // Check if it hit an enemy
-        BaseEnemy enemy = other.GetComponent<BaseEnemy>();
-
+        BaseEnemy enemy = collision.gameObject.GetComponentInParent<BaseEnemy>();
         if (enemy != null)
         {
             if (enemy is SlimeEnemy)
             {
-                // Hit slime: Play sound, no damage
+                Debug.Log("Projectile hit a Slime - Playing fail sound, no damage.");
                 if (audioSource != null && slimeFailSound != null)
                 {
                     audioSource.PlayOneShot(slimeFailSound);
                 }
-
-                Debug.Log("Hit Slime - fail sound played.");
-                // Optionally destroy projectile or not
                 Destroy(gameObject);
             }
             else
             {
-                // Hit other enemy: Deal damage
-                enemy.TakeDamage(damage);
-                Debug.Log("Hit enemy " + enemy.name + ", dealt " + damage + " damage.");
+                Debug.Log($"Projectile dealing {damage} damage to {enemy.name} via ReceiveProjectileHit()");
+                enemy.ReceiveProjectileHit(damage);
                 Destroy(gameObject);
             }
         }
         else
         {
-            // Hit wall / ground
+            Debug.Log("Projectile hit something that is not an enemy.");
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("OnTriggerEnter was triggered."); // If using triggers
+        Debug.Log($"Projectile trigger hit: {other.gameObject.name}");
+
+        BaseEnemy enemy = other.GetComponentInParent<BaseEnemy>();
+        if (enemy != null)
+        {
+            if (enemy is SlimeEnemy)
+            {
+                Debug.Log("Trigger hit a Slime - Playing fail sound, no damage.");
+                if (audioSource != null && slimeFailSound != null)
+                {
+                    audioSource.PlayOneShot(slimeFailSound);
+                }
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.Log($"Trigger dealing {damage} damage to {enemy.name} via ReceiveProjectileHit()");
+                enemy.ReceiveProjectileHit(damage);
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            Debug.Log("Trigger hit something else. Destroying.");
             Destroy(gameObject);
         }
     }

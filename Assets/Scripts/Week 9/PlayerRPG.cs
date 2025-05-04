@@ -18,9 +18,11 @@ public class PlayerRPG : MonoBehaviour
 
     [Header("Projectile Attack")]
     public GameObject projectilePrefab;
-    public float projectileSpawnOffset = 1f;
+    public float projectileSpawnOffset = 2f;
 
- 
+    [Header("Melee Attack")]
+    public float meleeRange = 2f;
+    public float meleeDamage = 10f;
 
     void Start()
     {
@@ -32,6 +34,11 @@ public class PlayerRPG : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             FireProjectile();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            PerformMeleeAttack();
         }
     }
 
@@ -52,10 +59,47 @@ public class PlayerRPG : MonoBehaviour
 
     void FireProjectile()
     {
-        if (projectilePrefab != null)
+        if (projectilePrefab == null)
         {
-            Vector3 spawnPosition = transform.position + transform.forward * projectileSpawnOffset + Vector3.up * 1f;
-            GameObject projectile = Instantiate(projectilePrefab, spawnPosition, Quaternion.LookRotation(transform.forward));
+            Debug.LogError("Projectile prefab is not assigned!");
+            return;
+        }
+
+        Camera mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("No main camera found!");
+            return;
+        }
+
+        Vector3 spawnPosition = mainCamera.transform.position + mainCamera.transform.forward * projectileSpawnOffset;
+        Quaternion spawnRotation = Quaternion.LookRotation(mainCamera.transform.forward);
+
+        GameObject projectile = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
+        Debug.Log("Projectile instantiated at: " + spawnPosition);
+    }
+
+    void PerformMeleeAttack()
+    {
+        RaycastHit hit;
+        Vector3 origin = transform.position + Vector3.up * 1f;
+        Vector3 direction = Camera.main.transform.forward;
+
+        Debug.DrawRay(origin, direction * meleeRange, Color.red, 1f);
+
+        if (Physics.Raycast(origin, direction, out hit, meleeRange))
+        {
+            Debug.Log("Melee attack hit: " + hit.collider.name);
+            BaseEnemy enemy = hit.collider.GetComponentInParent<BaseEnemy>();
+            if (enemy != null)
+            {
+                Debug.Log($"Dealing {meleeDamage} damage to {enemy.name}");
+                enemy.TakeDamage(meleeDamage);
+            }
+        }
+        else
+        {
+            Debug.Log("Melee attack missed.");
         }
     }
 }

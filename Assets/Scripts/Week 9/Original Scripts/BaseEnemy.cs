@@ -17,11 +17,13 @@ public class BaseEnemy : MonoBehaviour
 
     protected virtual void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerRPG>();
+        player = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerRPG>();
     }
 
     protected virtual void Update()
     {
+        if (player == null) return;
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
         if (distanceToPlayer <= attackRange)
@@ -42,7 +44,10 @@ public class BaseEnemy : MonoBehaviour
 
     protected virtual void Attack()
     {
-        player.TakeDamage(attackDamage);
+        if (player != null)
+        {
+            player.TakeDamage(attackDamage);
+        }
     }
 
     public virtual void Move()
@@ -53,11 +58,11 @@ public class BaseEnemy : MonoBehaviour
     public virtual void TakeDamage(float damage)
     {
         health -= damage;
-   
         Debug.Log($"{gameObject.name} took {damage} damage. Remaining health: {health}");
 
         if (health <= 0f)
         {
+            Debug.Log($"{gameObject.name} has been defeated.");
             Destroy(this.gameObject);
         }
     }
